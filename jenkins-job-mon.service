@@ -1,0 +1,20 @@
+[Unit]
+Description=Jenkins Job Status Monitoring Service.
+Wants=network.target
+After=network.target
+
+[Service]
+Type=forking
+WorkingDirectory=/opt/jenkins-job-mon/
+Environment=PATH=/opt/jenkins-job-mon/venv/bin:$PATH
+Environment=PYTHONPATH=/opt/jenkins-job-mon:/opt/jenkins-job-mon/venv/lib/python3.8/site-packages:$PYTHONPATH
+ExecStart=/bin/bash -c 'source /opt/jenkins-job-mon/venv/bin/activate && python /opt/jenkins-job-mon/jenkins-job-mon.py -d'
+Restart=on-failure
+RestartSec=20s
+PIDFile=/var/run/jenkins-job-mon.pid
+StandardOutput=file:/opt/jenkins-job-mon/log/run.log
+StandardError=file:/opt/jenkins-job-mon/log/error.log
+ExecStop=
+
+[Install]
+WantedBy=multi-user.target
